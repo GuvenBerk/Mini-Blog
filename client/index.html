@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini-Blog: Artykuły i Komentarze</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-blog"></i> Mini-Blog</h1>
+            <p class="subtitle">Udostępniaj artykuły i dołącz do dyskusji</p>
+        </header>
+
+        <main>
+            <section id="home-view" class="view active">
+                <div class="section-header">
+                    <h2><i class="fas fa-newspaper"></i> Najnowsze Artykuły</h2>
+                    <button id="add-article-btn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Dodaj Artykuł
+                    </button>
+                </div>
+                <div id="articles-container" class="articles-container"></div>
+            </section>
+
+            <section id="article-view" class="view">
+                <div class="section-header">
+                    <button id="back-to-home" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Powrót
+                    </button>
+                    <h2 id="article-view-title">Szczegóły Artykułu</h2>
+                    <button id="delete-article-btn" class="btn" style="background-color: #e74c3c; color: white; margin-left: auto;">
+                        <i class="fas fa-trash"></i> Usuń Artykuł
+                    </button>
+                </div>
+                <div id="article-details" class="article-details"></div>
+                
+                <div class="comments-section">
+                    <h3><i class="fas fa-comments"></i> Komentarze</h3>
+                    <div class="add-comment-form">
+                        <h4>Dodaj Komentarz</h4>
+                        <div class="form-group">
+                            <input type="text" id="comment-author" placeholder="Twoje imię" maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <textarea id="comment-content" placeholder="Twój komentarz..." rows="3" maxlength="500"></textarea>
+                        </div>
+                        <button id="submit-comment" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Wyślij
+                        </button>
+                    </div>
+                    <div id="comments-container" class="comments-container"></div>
+                </div>
+            </section>
+
+            <section id="add-article-view" class="view">
+                <div class="section-header">
+                    <button id="back-to-home-from-add" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Anuluj
+                    </button>
+                    <h2>Utwórz Nowy Artykuł</h2>
+                </div>
+                <div class="add-article-form">
+                    <div class="form-group">
+                        <label for="article-title">Tytuł</label>
+                        <input type="text" id="article-title" placeholder="Tytuł artykułu" maxlength="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="article-author">Autor</label>
+                        <input type="text" id="article-author" placeholder="Twoje imię" maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="article-content">Treść</label>
+                        <textarea id="article-content" placeholder="Treść artykułu..." rows="10" maxlength="5000"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button id="submit-article" class="btn btn-primary">
+                            <i class="fas fa-check"></i> Opublikuj
+                        </button>
+                        <button id="cancel-article" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Anuluj
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>Projekt Mini-Blog &copy; 2023</p>
+        </footer>
+    </div>
+
+    <div id="reply-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Odpowiedz na komentarz</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" id="reply-author" placeholder="Twoje imię" maxlength="50">
+                </div>
+                <div class="form-group">
+                    <textarea id="reply-content" placeholder="Twoja odpowiedź..." rows="4" maxlength="300"></textarea>
+                </div>
+                <input type="hidden" id="parent-comment-id">
+            </div>
+            <div class="modal-footer">
+                <button id="submit-reply" class="btn btn-primary">Wyślij Odpowiedź</button>
+                <button class="btn btn-secondary close-modal">Anuluj</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edytuj Komentarz</h3>
+                <button class="close-modal-edit">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <textarea id="edit-content" placeholder="Zmień treść..." rows="4" maxlength="300"></textarea>
+                </div>
+                <input type="hidden" id="edit-comment-id">
+            </div>
+            <div class="modal-footer">
+                <button id="submit-edit" class="btn btn-primary">Zapisz Zmiany</button>
+                <button class="btn btn-secondary close-modal-edit">Anuluj</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
