@@ -7,6 +7,7 @@ LINK MINI-BLOG:
 https://mini-blog-9vcx.onrender.com/
 
 Autor:
+
 Güven Berk Çakan - 68852
 
 Enes Talha Kayhan - N
