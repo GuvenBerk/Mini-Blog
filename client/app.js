@@ -1,11 +1,9 @@
 const blogAPI = {
-    baseUrl: 'http://localhost:3000/api',
+    baseUrl: window.location.origin.includes('localhost') 
+        ? 'http://localhost:3000/api' 
+        : '/api', // Render için relative path
     async getArticles() {
         const res = await fetch(`${this.baseUrl}/articles`);
-        return res.json();
-    },
-    async getArticle(id) {
-        const res = await fetch(`${this.baseUrl}/articles/${id}`);
         return res.json();
     },
     async createArticle(data) {

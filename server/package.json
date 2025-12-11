@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "init-db": "node -e \"require('./database.js').initDatabase()\""
+    "init-db": "node init-db.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

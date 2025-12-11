@@ -1,216 +1,263 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
+const { Pool } = require('pg');
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
-const PORT = 3000;
-const PLIK_BAZY = path.join(__dirname, 'database.json');
+const PORT = process.env.PORT || 3000;
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../client')));
+app.use(express.static(__dirname));
 
-const czytajDane = () => {
-    if (!fs.existsSync(PLIK_BAZY)) {
-        const danePoczatkowe = {
-            articles: [
-                {
-                    id: 1,
-                    title: "Witamy! To jest pierwszy artykuł",
-                    author: "Administrator",
-                    content: "System działa poprawnie. Możesz edytować i usuwać komentarze oraz artykuły!",
-                    createdAt: new Date().toISOString(),
-                    comments: []
-                }
-            ]
-        };
-        fs.writeFileSync(PLIK_BAZY, JSON.stringify(danePoczatkowe, null, 2));
-        return danePoczatkowe;
-    }
-    return JSON.parse(fs.readFileSync(PLIK_BAZY));
-};
-
-const zapiszDane = (dane) => {
-    fs.writeFileSync(PLIK_BAZY, JSON.stringify(dane, null, 2));
-};
-
-app.get('/api/articles', (req, res) => {
-    const dane = czytajDane();
-    const artykulyZeStatystykami = dane.articles.map(artykul => ({
-        ...artykul,
-        commentCount: artykul.comments ? artykul.comments.length : 0
-    }));
-    res.json(artykulyZeStatystykami);
+pool.on('connect', () => {
+  console.log('PostgreSQL veritabanına bağlandı');
 });
 
-app.get('/api/articles/:id', (req, res) => {
-    const dane = czytajDane();
-    const artykul = dane.articles.find(a => a.id === parseInt(req.params.id));
-    if (!artykul) return res.status(404).json({ error: 'Nie znaleziono artykułu' });
-    res.json(artykul);
+pool.on('error', (err) => {
+  console.error('PostgreSQL bağlantı hatası:', err);
 });
 
-app.post('/api/articles', (req, res) => {
-    const { title, author, content } = req.body;
-    const dane = czytajDane();
-    
-    const nowyArtykul = {
-        id: Date.now(),
-        title,
-        author,
-        content,
-        createdAt: new Date().toISOString(),
-        comments: []
-    };
-
-    dane.articles.unshift(nowyArtykul);
-    zapiszDane(dane);
-    res.status(201).json(nowyArtykul);
+app.get('/api/articles', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT a.*, 
+             COUNT(c.id) as comment_count
+      FROM articles a
+      LEFT JOIN comments c ON a.id = c.article_id AND c.parent_id IS NULL
+      GROUP BY a.id
+      ORDER BY a.created_at DESC
+    `);
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Artykuły yükleme hatası:', error);
+    res.status(500).json({ error: 'Wystąpił błąd serwera' });
+  }
 });
 
-app.delete('/api/articles/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    const dane = czytajDane();
-    
-    const dlugoscPoczatkowa = dane.articles.length;
-    dane.articles = dane.articles.filter(artykul => artykul.id !== id);
-
-    if (dane.articles.length < dlugoscPoczatkowa) {
-        zapiszDane(dane);
-        res.json({ success: true });
-    } else {
-        res.status(404).json({ error: 'Nie znaleziono artykułu' });
-    }
-});
-
-app.post('/api/articles/:id/comments', (req, res) => {
-    const { author, content } = req.body;
+app.get('/api/articles/:id', async (req, res) => {
+  try {
     const articleId = parseInt(req.params.id);
-    const dane = czytajDane();
-
-    const artykul = dane.articles.find(a => a.id === articleId);
-    if (!artykul) return res.status(404).json({ error: 'Nie znaleziono artykułu' });
-
-    const nowyKomentarz = {
-        id: Date.now(),
-        author,
-        content,
-        createdAt: new Date().toISOString(),
-        replies: [] 
-    };
-
-    if (!artykul.comments) artykul.comments = [];
-    artykul.comments.push(nowyKomentarz);
-    zapiszDane(dane);
-    res.status(201).json(nowyKomentarz);
+    
+    const articleResult = await pool.query(
+      'SELECT * FROM articles WHERE id = $1',
+      [articleId]
+    );
+    
+    if (articleResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Nie znaleziono artykułu' });
+    }
+    
+    const commentsResult = await pool.query(
+      `WITH RECURSIVE comment_tree AS (
+        SELECT id, article_id, author, content, parent_id, created_at, updated_at, 0 as depth
+        FROM comments 
+        WHERE article_id = $1 AND parent_id IS NULL
+        
+        UNION ALL
+        
+        SELECT c.id, c.article_id, c.author, c.content, c.parent_id, c.created_at, c.updated_at, ct.depth + 1
+        FROM comments c
+        INNER JOIN comment_tree ct ON c.parent_id = ct.id
+        WHERE c.article_id = $1
+      )
+      SELECT * FROM comment_tree ORDER BY created_at`,
+      [articleId]
+    );
+    
+    const article = articleResult.rows[0];
+    
+    const commentsMap = new Map();
+    const rootComments = [];
+    
+    commentsResult.rows.forEach(comment => {
+      comment.replies = [];
+      commentsMap.set(comment.id, comment);
+      
+      if (comment.parent_id) {
+        const parent = commentsMap.get(comment.parent_id);
+        if (parent) {
+          parent.replies.push(comment);
+        }
+      } else {
+        rootComments.push(comment);
+      }
+    });
+    
+    article.comments = rootComments;
+    
+    res.json(article);
+  } catch (error) {
+    console.error('Artykuł detay yükleme hatası:', error);
+    res.status(500).json({ error: 'Wystąpił błąd serwera' });
+  }
 });
 
-app.post('/api/articles/:articleId/comments/:commentId/replies', (req, res) => {
+app.post('/api/articles', async (req, res) => {
+  try {
+    const { title, author, content } = req.body;
+    
+    if (!title || !author || !content) {
+      return res.status(400).json({ error: 'Wszystkie pola są wymagane' });
+    }
+    
+    const result = await pool.query(
+      `INSERT INTO articles (title, author, content, created_at) 
+       VALUES ($1, $2, $3, NOW()) 
+       RETURNING *`,
+      [title, author, content]
+    );
+    
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Artykuł oluşturma hatası:', error);
+    res.status(500).json({ error: 'Wystąpił błąd serwera' });
+  }
+});
+
+app.delete('/api/articles/:id', async (req, res) => {
+  try {
+    const articleId = parseInt(req.params.id);
+    
+    const result = await pool.query(
+      'DELETE FROM articles WHERE id = $1 RETURNING id',
+      [articleId]
+    );
+    
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Nie znaleziono artykułu' });
+    }
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Artykuł silme hatası:', error);
+    res.status(500).json({ error: 'Wystąpił błąd serwera' });
+  }
+});
+
+app.post('/api/articles/:id/comments', async (req, res) => {
+  try {
+    const articleId = parseInt(req.params.id);
     const { author, content } = req.body;
+    
+    const articleCheck = await pool.query(
+      'SELECT id FROM articles WHERE id = $1',
+      [articleId]
+    );
+    
+    if (articleCheck.rowCount === 0) {
+      return res.status(404).json({ error: 'Nie znaleziono artykułu' });
+    }
+    
+    if (!author || !content) {
+      return res.status(400).json({ error: 'Wszystkie pola są wymagane' });
+    }
+    
+    const result = await pool.query(
+      `INSERT INTO comments (article_id, author, content, created_at) 
+       VALUES ($1, $2, $3, NOW()) 
+       RETURNING *`,
+      [articleId, author, content]
+    );
+    
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Komentarz oluşturma hatası:', error);
+    res.status(500).json({ error: 'Wystąpił błąd serwera' });
+  }
+});
+
+app.post('/api/articles/:articleId/comments/:commentId/replies', async (req, res) => {
+  try {
     const articleId = parseInt(req.params.articleId);
     const commentId = parseInt(req.params.commentId);
-    const dane = czytajDane();
-
-    const artykul = dane.articles.find(a => a.id === articleId);
-    if (!artykul) return res.status(404).json({ error: 'Nie znaleziono artykułu' });
-
-    let celKomentarz = null;
-    celKomentarz = artykul.comments.find(c => c.id === commentId);
-
-    if (!celKomentarz) {
-        artykul.comments.forEach(c => {
-            if (c.replies) {
-                const znalezionaOdpowiedz = c.replies.find(r => r.id === commentId);
-                if (znalezionaOdpowiedz) celKomentarz = znalezionaOdpowiedz;
-            }
-        });
-    }
-
-    if (!celKomentarz) return res.status(404).json({ error: 'Nie znaleziono komentarza' });
-
-    const nowaOdpowiedz = {
-        id: Date.now(),
-        author,
-        content,
-        createdAt: new Date().toISOString(),
-        replies: [] 
-    };
-
-    if (!celKomentarz.replies) celKomentarz.replies = [];
-    celKomentarz.replies.push(nowaOdpowiedz);
+    const { author, content } = req.body;
     
-    zapiszDane(dane);
-    res.status(201).json(nowaOdpowiedz);
+    const commentCheck = await pool.query(
+      'SELECT id FROM comments WHERE id = $1 AND article_id = $2',
+      [commentId, articleId]
+    );
+    
+    if (commentCheck.rowCount === 0) {
+      return res.status(404).json({ error: 'Nie znaleziono komentarza' });
+    }
+    
+    if (!author || !content) {
+      return res.status(400).json({ error: 'Wszystkie pola są wymagane' });
+    }
+    
+    const result = await pool.query(
+      `INSERT INTO comments (article_id, author, content, parent_id, created_at) 
+       VALUES ($1, $2, $3, $4, NOW()) 
+       RETURNING *`,
+      [articleId, author, content, commentId]
+    );
+    
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Odpowiedź oluşturma hatası:', error);
+    res.status(500).json({ error: 'Wystąpił błąd serwera' });
+  }
 });
 
-app.delete('/api/articles/:articleId/comments/:commentId', (req, res) => {
-    const articleId = Number(req.params.articleId);
-    const commentId = Number(req.params.commentId); 
-    const dane = czytajDane();
-
-    const artykul = dane.articles.find(a => a.id === articleId);
-    if (!artykul) return res.status(404).json({ error: 'Nie znaleziono artykułu' });
-
-    let silindiMi = false;
-
-    const baslangicSayisi = artykul.comments.length;
-    artykul.comments = artykul.comments.filter(c => c.id !== commentId);
+app.delete('/api/articles/:articleId/comments/:commentId', async (req, res) => {
+  try {
+    const articleId = parseInt(req.params.articleId);
+    const commentId = parseInt(req.params.commentId);
     
-    if (artykul.comments.length < baslangicSayisi) {
-        silindiMi = true;
+    const result = await pool.query(
+      'DELETE FROM comments WHERE id = $1 AND article_id = $2 RETURNING id',
+      [commentId, articleId]
+    );
+    
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Nie znaleziono komentarza' });
     }
-
-    if (!silindiMi) {
-        artykul.comments.forEach(c => {
-            if (c.replies && c.replies.length > 0) {
-                const cevapSayisi = c.replies.length;
-                c.replies = c.replies.filter(r => r.id !== commentId);
-                if (c.replies.length < cevapSayisi) {
-                    silindiMi = true;
-                }
-            }
-        });
-    }
-
-    if (silindiMi) {
-        zapiszDane(dane);
-        res.json({ success: true });
-    } else {
-        res.status(404).json({ error: 'Nie znaleziono komentarza lub błąd ID' });
-    }
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Komentarz silme hatası:', error);
+    res.status(500).json({ error: 'Wystąpił błąd serwera' });
+  }
 });
 
-app.put('/api/articles/:articleId/comments/:commentId', (req, res) => {
+app.put('/api/articles/:articleId/comments/:commentId', async (req, res) => {
+  try {
+    const articleId = parseInt(req.params.articleId);
+    const commentId = parseInt(req.params.commentId);
     const { content } = req.body;
-    const articleId = Number(req.params.articleId);
-    const commentId = Number(req.params.commentId);
-    const dane = czytajDane();
-
-    const artykul = dane.articles.find(a => a.id === articleId);
-    if (!artykul) return res.status(404).json({ error: 'Nie znaleziono artykułu' });
-
-    let target = artykul.comments.find(c => c.id === commentId);
-
-    if (!target) {
-        artykul.comments.forEach(c => {
-            if (c.replies) {
-                const reply = c.replies.find(r => r.id === commentId);
-                if (reply) target = reply;
-            }
-        });
+    
+    if (!content) {
+      return res.status(400).json({ error: 'Treść jest wymagana' });
     }
-
-    if (target) {
-        target.content = content;
-        zapiszDane(dane);
-        res.json(target);
-    } else {
-        res.status(404).json({ error: 'Nie znaleziono komentarza' });
+    
+    const result = await pool.query(
+      `UPDATE comments 
+       SET content = $1, updated_at = NOW() 
+       WHERE id = $2 AND article_id = $3 
+       RETURNING *`,
+      [content, commentId, articleId]
+    );
+    
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Nie znaleziono komentarza' });
     }
+    
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Komentarz güncelleme hatası:', error);
+    res.status(500).json({ error: 'Wystąpił błąd serwera' });
+  }
 });
 
 app.listen(PORT, () => {
-    console.log(`Serwer działa pod adresem http://localhost:${PORT}`);
-    console.log('Baza danych: używany jest plik database.json');
+  console.log(`Serwer działa pod adresem http://localhost:${PORT}`);
+  console.log('Baza danych: PostgreSQL');
 });
