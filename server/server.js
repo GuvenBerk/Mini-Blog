@@ -1,6 +1,7 @@
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -15,7 +16,23 @@ const pool = new Pool({
 
 app.use(cors());
 app.use(express.json());
+
+// Statik dosyaları sun (Render için düzeltildi)
 app.use(express.static(__dirname));
+
+// Ana sayfa için route
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Diğer statik dosyalar için
+app.get('/style.css', (req, res) => {
+  res.sendFile(path.join(__dirname, 'style.css'));
+});
+
+app.get('/app.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'app.js'));
+});
 
 pool.on('connect', () => {
   console.log('PostgreSQL veritabanına bağlandı');
@@ -254,6 +271,13 @@ app.put('/api/articles/:articleId/comments/:commentId', async (req, res) => {
   } catch (error) {
     console.error('Komentarz güncelleme hatası:', error);
     res.status(500).json({ error: 'Wystąpił błąd serwera' });
+  }
+});
+
+// API olmayan tüm istekleri index.html'e yönlendir (SPA için)
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(__dirname, 'index.html'));
   }
 });
 
