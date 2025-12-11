@@ -368,34 +368,6 @@ body {
     gap: 15px;
 }
 
-.footer {
-    margin-top: 3rem;
-    padding: 2rem 0;
-    text-align: center;
-    color: #7f8c8d;
-    border-top: 1px solid #eee;
-}
-
-.footer-links {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-.footer-links a {
-    color: #3498db;
-    text-decoration: none;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.footer-links a:hover {
-    text-decoration: underline;
-}
-
 .empty-state {
     text-align: center;
     padding: 3rem;
