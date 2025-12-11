@@ -17,21 +17,21 @@ const pool = new Pool({
 app.use(cors());
 app.use(express.json());
 
-// Client klasöründeki statik dosyaları sun
-app.use(express.static(path.join(__dirname, 'client')));
+// Client klasöründeki statik dosyaları sun (bir üst klasöre çıkıp client'a git)
+app.use(express.static(path.join(__dirname, '..', 'client')));
 
 // Ana sayfa için route
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'client', 'index.html'));
 });
 
 // Diğer statik dosyalar için explicit route'lar
 app.get('/style.css', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'style.css'));
+  res.sendFile(path.join(__dirname, '..', 'client', 'style.css'));
 });
 
 app.get('/app.js', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'app.js'));
+  res.sendFile(path.join(__dirname, '..', 'client', 'app.js'));
 });
 
 pool.on('connect', () => {
@@ -42,7 +42,7 @@ pool.on('error', (err) => {
   console.error('PostgreSQL bağlantı hatası:', err);
 });
 
-// API Routes (değişmedi)
+// API Routes
 app.get('/api/articles', async (req, res) => {
   try {
     const result = await pool.query(`
@@ -278,12 +278,12 @@ app.put('/api/articles/:articleId/comments/:commentId', async (req, res) => {
 // SPA için: API olmayan tüm istekleri index.html'e yönlendir
 app.get('*', (req, res) => {
   if (!req.path.startsWith('/api')) {
-    res.sendFile(path.join(__dirname, 'client', 'index.html'));
+    res.sendFile(path.join(__dirname, '..', 'client', 'index.html'));
   }
 });
 
 app.listen(PORT, () => {
   console.log(`Serwer działa pod adresem http://localhost:${PORT}`);
   console.log('Baza danych: PostgreSQL');
-  console.log('Frontend dosyaları: client/ klasöründe');
+  console.log('Frontend dosyaları: ../client/ klasöründe');
 });
