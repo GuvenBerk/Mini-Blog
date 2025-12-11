@@ -9,11 +9,7 @@ const PLIK_BAZY = path.join(__dirname, 'database.json');
 
 app.use(cors());
 app.use(express.json());
-<<<<<<< HEAD
 app.use(express.static(path.join(__dirname, '..', 'client')));
-=======
-app.use(express.static(path.join(__dirname, '../client')));
->>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 
 const czytajDane = () => {
     if (!fs.existsSync(PLIK_BAZY)) {
@@ -39,7 +35,6 @@ const zapiszDane = (dane) => {
     fs.writeFileSync(PLIK_BAZY, JSON.stringify(dane, null, 2));
 };
 
-<<<<<<< HEAD
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'client', 'index.html'));
 });
@@ -52,8 +47,6 @@ app.get('/app.js', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'client', 'app.js'));
 });
 
-=======
->>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 app.get('/api/articles', (req, res) => {
     const dane = czytajDane();
     const artykulyZeStatystykami = dane.articles.map(artykul => ({
@@ -171,7 +164,6 @@ app.delete('/api/articles/:articleId/comments/:commentId', (req, res) => {
     const artykul = dane.articles.find(a => a.id === articleId);
     if (!artykul) return res.status(404).json({ error: 'Nie znaleziono artykułu' });
 
-<<<<<<< HEAD
     let czyUsunieto = false;
 
     const baslangicLiczbaKomentarzy = artykul.comments.length;
@@ -188,34 +180,12 @@ app.delete('/api/articles/:articleId/comments/:commentId', (req, res) => {
                 c.replies = c.replies.filter(r => r.id !== commentId);
                 if (c.replies.length < liczbaOdpowiedzi) {
                     czyUsunieto = true;
-=======
-    let silindiMi = false;
-
-    const baslangicSayisi = artykul.comments.length;
-    artykul.comments = artykul.comments.filter(c => c.id !== commentId);
-    
-    if (artykul.comments.length < baslangicSayisi) {
-        silindiMi = true;
-    }
-
-    if (!silindiMi) {
-        artykul.comments.forEach(c => {
-            if (c.replies && c.replies.length > 0) {
-                const cevapSayisi = c.replies.length;
-                c.replies = c.replies.filter(r => r.id !== commentId);
-                if (c.replies.length < cevapSayisi) {
-                    silindiMi = true;
->>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
                 }
             }
         });
     }
 
-<<<<<<< HEAD
     if (czyUsunieto) {
-=======
-    if (silindiMi) {
->>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
         zapiszDane(dane);
         res.json({ success: true });
     } else {
@@ -252,15 +222,12 @@ app.put('/api/articles/:articleId/comments/:commentId', (req, res) => {
     }
 });
 
-<<<<<<< HEAD
 app.get('*', (req, res) => {
     if (!req.path.startsWith('/api')) {
         res.sendFile(path.join(__dirname, '..', 'client', 'index.html'));
     }
 });
 
-=======
->>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 app.listen(PORT, () => {
     console.log(`Serwer działa pod adresem http://localhost:${PORT}`);
     console.log('Baza danych: używany jest plik database.json');
