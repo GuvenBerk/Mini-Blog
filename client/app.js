@@ -1,5 +1,5 @@
 const blogAPI = {
-    baseUrl: '/api', // Render'da relative path kullan
+    baseUrl: '/api',
     async getArticles() {
         const res = await fetch(`${this.baseUrl}/articles`);
         return res.json();
