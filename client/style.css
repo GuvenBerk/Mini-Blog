@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+/* Reset and Base Styles */
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 * {
     margin: 0;
     padding: 0;
@@ -17,6 +21,10 @@ body {
     padding: 0 20px;
 }
 
+<<<<<<< HEAD
+=======
+/* Header Styles */
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 .header {
     background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
     color: white;
@@ -37,6 +45,10 @@ body {
     opacity: 0.9;
 }
 
+<<<<<<< HEAD
+=======
+/* View Management */
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 .view {
     display: none;
 }
@@ -51,6 +63,10 @@ body {
     to { opacity: 1; }
 }
 
+<<<<<<< HEAD
+=======
+/* Section Header */
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -65,6 +81,10 @@ body {
     font-size: 1.8rem;
 }
 
+<<<<<<< HEAD
+=======
+/* Button Styles */
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 .btn {
     padding: 10px 20px;
     border: none;
@@ -97,6 +117,10 @@ body {
     background-color: #7f8c8d;
 }
 
+<<<<<<< HEAD
+=======
+/* Articles Container */
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 .articles-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -150,6 +174,10 @@ body {
     font-size: 0.9rem;
 }
 
+<<<<<<< HEAD
+=======
+/* Article Details */
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 .article-details {
     background: white;
     border-radius: 10px;
@@ -177,6 +205,10 @@ body {
     font-size: 1.1rem;
 }
 
+<<<<<<< HEAD
+=======
+/* Comments Section */
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 .comments-section {
     background: white;
     border-radius: 10px;
@@ -191,6 +223,10 @@ body {
     border-bottom: 2px solid #f0f0f0;
 }
 
+<<<<<<< HEAD
+=======
+/* Add Comment Form */
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 .add-comment-form {
     background: #f8f9fa;
     padding: 1.5rem;
@@ -203,6 +239,10 @@ body {
     color: #2c3e50;
 }
 
+<<<<<<< HEAD
+=======
+/* Form Styles */
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 .form-group {
     margin-bottom: 1.2rem;
 }
@@ -238,6 +278,10 @@ body {
     margin-top: 1.5rem;
 }
 
+<<<<<<< HEAD
+=======
+/* Comments Container */
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 .comments-container {
     margin-top: 1rem;
 }
@@ -293,6 +337,10 @@ body {
     background-color: rgba(52, 152, 219, 0.1);
 }
 
+<<<<<<< HEAD
+=======
+/* Reply Styles */
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 .replies-container {
     margin-left: 2rem;
     margin-top: 1rem;
@@ -308,6 +356,10 @@ body {
     border: 1px solid #eee;
 }
 
+<<<<<<< HEAD
+=======
+/* Modal Styles */
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 .modal {
     display: none;
     position: fixed;
@@ -368,6 +420,10 @@ body {
     gap: 15px;
 }
 
+<<<<<<< HEAD
+=======
+/* Footer Styles */
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 .footer {
     margin-top: 3rem;
     padding: 2rem 0;
@@ -396,6 +452,10 @@ body {
     text-decoration: underline;
 }
 
+<<<<<<< HEAD
+=======
+/* Empty State */
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 .empty-state {
     text-align: center;
     padding: 3rem;
@@ -408,6 +468,10 @@ body {
     color: #bdc3c7;
 }
 
+<<<<<<< HEAD
+=======
+/* Responsive Design */
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
 @media (max-width: 768px) {
     .articles-container {
         grid-template-columns: 1fr;

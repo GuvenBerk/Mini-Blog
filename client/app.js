@@ -1,5 +1,9 @@
 const blogAPI = {
+<<<<<<< HEAD
     baseUrl: '/api',
+=======
+    baseUrl: 'http://localhost:3000/api',
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
     async getArticles() {
         const res = await fetch(`${this.baseUrl}/articles`);
         return res.json();
@@ -155,7 +159,11 @@ async function loadArticles() {
         articles = await blogAPI.getArticles();
         renderArticles();
     } catch (error) {
+<<<<<<< HEAD
         console.error('Błąd ładowania artykułów:', error);
+=======
+        console.error('Error loading articles:', error);
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
     }
 }
 
@@ -203,7 +211,11 @@ async function openArticle(articleId) {
         elements.commentContentInput.value = '';
         showView('article');
     } catch (error) {
+<<<<<<< HEAD
         console.error('Błąd otwierania artykułu:', error);
+=======
+        console.error('Error opening article:', error);
+>>>>>>> 77d6ea44d6f703885c2465524020da69b78fd06e
     }
 }
 
