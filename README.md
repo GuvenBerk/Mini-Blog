@@ -1,28 +1,28 @@
 # Mini-Blog Project
 
-## 📖 App Description
+## App Description
 
 Mini-Blog is a modern and user-friendly blogging platform. It is a fully functional web application that allows users to publish articles, add comments to those articles, and reply to other users' comments. The application supports **CRUD (Create, Read, Update, Delete)** operations and works correctly on all devices thanks to its responsive design.
 
 ---
 
-## ✨ Main Features
+## Main Features
 
-### 📝 Article Management
+### Article Management
 
 * Creating new articles
 * Displaying all articles
 * Displaying article details
 * Deleting articles
 
-### 💬 Comment System
+### Comment System
 
 * Adding comments to articles
 * Replying to comments (hierarchical structure)
 * Editing comments
 * Deleting comments
 
-### 🎨 User Interface
+### User Interface
 
 * Responsive design (adapted for mobile devices)
 * Modern and clean interface
@@ -31,7 +31,7 @@ Mini-Blog is a modern and user-friendly blogging platform. It is a fully functio
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 ### Frontend
 
@@ -59,7 +59,7 @@ Mini-Blog is a modern and user-friendly blogging platform. It is a fully functio
 
 ---
 
-## 🚀 Local Setup Instructions
+## Local Setup Instructions
 
 ### Step 1: Prerequisites
 
@@ -101,7 +101,7 @@ http://localhost:3000
 
 ---
 
-## 🌐 Online Demo
+## Online Demo
 
 You can test the application at:
 
@@ -109,7 +109,7 @@ You can test the application at:
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 Mini-Blog/
@@ -127,7 +127,7 @@ Mini-Blog/
 
 ---
 
-## 🔗 Links
+## Links
 
 * **GitHub Repository**: [https://github.com/BURGERDONALS/Mini-Blog](https://github.com/BURGERDONALS/Mini-Blog)
 * **Online Demo**: [https://mini-blog-9vcx.onrender.com/](https://mini-blog-9vcx.onrender.com/)
@@ -136,14 +136,14 @@ Mini-Blog/
 
 ---
 
-## 👥 Team
+## Team
 
 * **Güven Berk Çakan** (68852)
 * **Enes Talha Kayhan** (67829)
 
 ---
 
-## 📝 API Endpoints
+## API Endpoints
 
 * `GET /api/articles` – get all articles
 * `GET /api/articles/:id` – get a specific article
@@ -158,29 +158,29 @@ Mini-Blog/
 
 # Projekt Mini-Blog
 
-## 📖 Opis aplikacji
+## Opis aplikacji
 
 Mini-Blog to nowoczesna i przyjazna użytkownikom platforma blogowa. Jest to w pełni funkcjonalna aplikacja webowa, która umożliwia użytkownikom publikowanie artykułów, dodawanie komentarzy do tych artykułów oraz odpowiadanie na komentarze innych użytkowników. Aplikacja obsługuje operacje **CRUD (Create, Read, Update, Delete)** i dzięki responsywnemu designowi działa poprawnie na wszystkich urządzeniach.
 
 ---
 
-## ✨ Główne funkcjonalności
+## Główne funkcjonalności
 
-### 📝 Zarządzanie artykułami
+### Zarządzanie artykułami
 
 * Tworzenie nowych artykułów
 * Wyświetlanie wszystkich artykułów
 * Wyświetlanie szczegółów artykułu
 * Usuwanie artykułów
 
-### 💬 System komentarzy
+### System komentarzy
 
 * Dodawanie komentarzy do artykułów
 * Odpowiadanie na komentarze (struktura hierarchiczna)
 * Edycja komentarzy
 * Usuwanie komentarzy
 
-### 🎨 Interfejs użytkownika
+### Interfejs użytkownika
 
 * Responsywny design (dostosowany do urządzeń mobilnych)
 * Nowoczesny i przejrzysty interfejs
@@ -189,7 +189,7 @@ Mini-Blog to nowoczesna i przyjazna użytkownikom platforma blogowa. Jest to w p
 
 ---
 
-## 🛠️ Wykorzystane technologie
+## Wykorzystane technologie
 
 ### Frontend
 
@@ -217,7 +217,7 @@ Mini-Blog to nowoczesna i przyjazna użytkownikom platforma blogowa. Jest to w p
 
 ---
 
-## 🚀 Instrukcja uruchomienia lokalnego
+## Instrukcja uruchomienia lokalnego
 
 ### Krok 1: Wymagania wstępne
 
@@ -259,7 +259,7 @@ http://localhost:3000
 
 ---
 
-## 🌐 Demo online
+## Demo online
 
 Aplikację można przetestować pod adresem:
 
@@ -267,7 +267,7 @@ Aplikację można przetestować pod adresem:
 
 ---
 
-## 📂 Struktura projektu
+## Struktura projektu
 
 ```text
 Mini-Blog/
@@ -285,7 +285,7 @@ Mini-Blog/
 
 ---
 
-## 🔗 Linki
+## Linki
 
 * **Repozytorium GitHub**: [https://github.com/BURGERDONALS/Mini-Blog](https://github.com/BURGERDONALS/Mini-Blog)
 * **Demo online**: [https://mini-blog-9vcx.onrender.com/](https://mini-blog-9vcx.onrender.com/)
@@ -294,14 +294,14 @@ Mini-Blog/
 
 ---
 
-## 👥 Zespół
+## Zespół
 
 * **Güven Berk Çakan** (68852)
 * **Enes Talha Kayhan** (67829)
 
 ---
 
-## 📝 Endpointy API
+## Endpointy API
 
 * `GET /api/articles` – pobierz wszystkie artykuły
 * `GET /api/articles/:id` – pobierz wybrany artykuł
