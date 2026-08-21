@@ -12,9 +12,6 @@ The database layer is intentionally swappable: a JSON file is used in developmen
 
 The frontend is deliberately plain — HTML, CSS, and vanilla JS, no framework — since the actual problem being solved was the comment hierarchy and the API design, not the UI layer.
 
-## My Contribution
-This was a two-person project (with Enes Talha Kayhan). [Add a specific note here on which parts you personally owned — e.g. "I designed and implemented the nested comment/reply data model and the corresponding API endpoints" — so it's clear in an interview what's yours.]
-
 ## Features
 **Articles**
 - Create, view, and delete articles
@@ -70,9 +67,6 @@ Komentarze nie są płaskie — odpowiedź jest przechowywana jako element podrz
 Warstwa bazy danych jest celowo wymienna: w środowisku deweloperskim używany jest plik JSON, dzięki czemu projekt można sklonować i uruchomić bez żadnej konfiguracji, natomiast PostgreSQL jest przygotowany jako opcja produkcyjna. Ukrycie tego za tym samym interfejsem sprawiło, że przełączenie między nimi nie wymagało zmian w logice tras (routes).
 
 Frontend jest celowo prosty — HTML, CSS i czysty JavaScript, bez frameworka — ponieważ rzeczywistym problemem do rozwiązania była hierarchia komentarzy i projekt API, a nie warstwa UI.
-
-## Mój Wkład
-To był projekt dwuosobowy (z Enesem Talha Kayhanem). [Tu dodaj konkretną notatkę, którą część osobiście stworzyłeś.]
 
 ## Funkcjonalności
 **Artykuły**
